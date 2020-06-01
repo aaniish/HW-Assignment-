@@ -23,89 +23,77 @@ def main():
 		if st.button("Reverse Alphabetical Order"):
 			reverseNames =  sorted(filenames, reverse=True)
 			st.write(reverseNames)
-		selected_filename = st.selectbox("Select A file",filenames)
+		selected_filename = st.selectbox("Select A file",filenames,key="na_upper")
+		return os.path.join(folder_path,selected_filename)
+
+	def file_selector2(folder_path='./datasets'):
+		filenames = os.listdir(folder_path)
+		selected_filename = st.selectbox("Select A file",filenames,key="na_lower")
 		return os.path.join(folder_path,selected_filename)
 
 	filename = file_selector()
 	st.info("You Selected {}".format(filename))
 
-	# Read Data
+	# This code reads the dataset selected by the user
 	df = pd.read_csv(filename)
-	x = df.iloc[:,0].values
-	y = df.iloc[:,1].values
-
-
-	# Show Dataset
-
-	if st.checkbox("Show Dataset"):
-		raw_folder_path='./rawData'
-		rawFiles = os.listdir(raw_folder_path)
-		raw_df = pd.read_csv(filename)
-		if ("Boston" in filename):
-			raw_df = pd.read_csv('./rawData/dataexport_20200529T213040.csv')
-		elif ("Miami" in filename):
-			raw_df = pd.read_csv('./rawData/dataexport_20200529T213325.csv')
-		elif ("Vegas" in filename):
-			raw_df = pd.read_csv('./rawData/dataexport_20200529T213304.csv')
-		elif ("Minneapolis" in filename):
-			raw_df = pd.read_csv('./rawData/dataexport_20200529T213252.csv')
-		elif ("Angeles" in filename):
-			raw_df = pd.read_csv('./rawData/dataexport_20200529T213229.csv')
-		elif ("Seattle" in filename):
-			raw_df = pd.read_csv('./rawData/dataexport_20200529T213211.csv')
-		elif ("Philadelphia" in filename):
-			raw_df = pd.read_csv('./rawData/dataexport_20200529T213151.csv')
-		elif ("Washington" in filename):
-			raw_df = pd.read_csv('./rawData/dataexport_20200529T213133.csv')
-		elif ("Houston" in filename):
-			raw_df = pd.read_csv('./rawData/dataexport_20200529T213110.csv')
-		elif ("Boston" in filename):
-			raw_df = pd.read_csv('./rawData/dataexport_20200529T213040.csv')
-		elif ("York" in filename):
-			raw_df = pd.read_csv('./rawData/dataexport_20200529T213019.csv')
-		elif ("Chicago" in filename):
-			raw_df = pd.read_csv('./rawData/dataexport_20200529T212951.csv')
-		elif ("Antonio" in filename):
-			raw_df = pd.read_csv('./rawData/dataexport_20200529T212901.csv')
-		elif ("Diego" in filename):
-			raw_df = pd.read_csv('./rawData/dataexport_20200529T212845.csv')
-		elif ("Francisco" in filename):
-			raw_df = pd.read_csv('./rawData/dataexport_20200529T212809.csv')
-		st.dataframe(raw_df)
-
-
-	# Select Columns
-	if st.checkbox("Select Columns To Show"):
-		all_columns = df.columns.tolist()
-		selected_columns = st.multiselect("Select",all_columns)
-		new_df = df[selected_columns]
-		st.dataframe(new_df)
 
 
 
-	# Show Summary
+	def get_data(filename,keyID):
+		if st.checkbox("Show Dataset",key=keyID):
+			raw_folder_path='./rawData'
+			rawFiles = os.listdir(raw_folder_path)
+			raw_df = pd.read_csv(filename)
+			if ("Boston" in filename):
+				raw_df = pd.read_csv('./rawData/dataexport_20200529T213040.csv')
+			elif ("Miami" in filename):
+				raw_df = pd.read_csv('./rawData/dataexport_20200529T213325.csv')
+			elif ("Vegas" in filename):
+				raw_df = pd.read_csv('./rawData/dataexport_20200529T213304.csv')
+			elif ("Minneapolis" in filename):
+				raw_df = pd.read_csv('./rawData/dataexport_20200529T213252.csv')
+			elif ("Angeles" in filename):
+				raw_df = pd.read_csv('./rawData/dataexport_20200529T213229.csv')
+			elif ("Seattle" in filename):
+				raw_df = pd.read_csv('./rawData/dataexport_20200529T213211.csv')
+			elif ("Philadelphia" in filename):
+				raw_df = pd.read_csv('./rawData/dataexport_20200529T213151.csv')
+			elif ("Washington" in filename):
+				raw_df = pd.read_csv('./rawData/dataexport_20200529T213133.csv')
+			elif ("Houston" in filename):
+				raw_df = pd.read_csv('./rawData/dataexport_20200529T213110.csv')
+			elif ("Boston" in filename):
+				raw_df = pd.read_csv('./rawData/dataexport_20200529T213040.csv')
+			elif ("York" in filename):
+				raw_df = pd.read_csv('./rawData/dataexport_20200529T213019.csv')
+			elif ("Chicago" in filename):
+				raw_df = pd.read_csv('./rawData/dataexport_20200529T212951.csv')
+			elif ("Antonio" in filename):
+				raw_df = pd.read_csv('./rawData/dataexport_20200529T212901.csv')
+			elif ("Diego" in filename):
+				raw_df = pd.read_csv('./rawData/dataexport_20200529T212845.csv')
+			elif ("Francisco" in filename):
+				raw_df = pd.read_csv('./rawData/dataexport_20200529T212809.csv')
+			st.dataframe(raw_df)
+
+
+	get_data(filename,"1")
+
 	if st.checkbox("Summary"):
 		st.write(df.describe().T)
 
-	## Plot and Visualization
 
 	st.subheader("Data Visualization")
-	# Correlation
-	# Seaborn Plot
-	if st.checkbox("Correlation Plot[Seaborn]"):
-		st.write(sns.heatmap(df.corr(),annot=True))
-		st.pyplot()
 
 
-	# Pie Chart
+	# This code shows a pie chart
 	if st.checkbox("Pie Plot"):
 		all_columns_names = df.columns.tolist()
-		if st.button("Generate Pie Plot"):
+		if st.button("Generate Pie Plot",key="3"):
 			st.success("Generating A Pie Plot")
 			st.write(df.iloc[:,-1].value_counts().plot.pie(autopct="%1.1f%%"))
 			st.pyplot()
 
-	# Count Plot
 	if st.checkbox("Plot of Value Counts"):
 		st.text("Value Counts By Target")
 		all_columns_names = df.columns.tolist()
@@ -121,7 +109,6 @@ def main():
 			st.pyplot()
 
 
-	# Customizable Plot
 	st.subheader("Customizable Plot")
 
 	all_columns_names = df.columns.tolist()
@@ -132,7 +119,6 @@ def main():
 	if st.button("Generate Plot"):
 		st.success("Generating Customizable Plot of {} for {}".format(type_of_plot,selected_columns_names))
 
-		# Plot By Streamlit
 		if type_of_plot == 'area':
 			cust_data = df[selected_columns_names]
 			st.area_chart(cust_data)
@@ -145,7 +131,6 @@ def main():
 			cust_data = df[selected_columns_names]
 			st.line_chart(cust_data)
 
-		# Custom Plot
 		elif type_of_plot:
 			cust_plot= df[selected_columns_names].plot(kind=type_of_plot)
 			st.write(cust_plot)
